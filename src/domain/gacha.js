@@ -1,27 +1,14 @@
+// src/domain/gacha.js
 const Aimless = require('aimless.js');
 
-// レア度の確率定数
-const RARITY_RATES = {
-  SILVER: 0.79,
-  GOLD: 0.18,
-  RAINBOW: 0.03,
-  PICKUP: 0.007,
-};
-
-// ピックアップ確率（虹の中での割合: 0.7% / 3% ≈ 0.233）
-const PICKUP_RATE = RARITY_RATES.PICKUP / RARITY_RATES.RAINBOW;
-
-// 10連の10枠目用（金以上確定）
-const GUARANTEED_RATES = {
-  GOLD: 0.97,
-  RAINBOW: 0.03,
-};
-
-const RARITY_OPTIONS = ['silver', 'gold', 'rainbow'];
-const RARITY_WEIGHTS = [RARITY_RATES.SILVER, RARITY_RATES.GOLD, RARITY_RATES.RAINBOW];
-
-const GUARANTEED_OPTIONS = ['gold', 'rainbow'];
-const GUARANTEED_WEIGHTS = [GUARANTEED_RATES.GOLD, GUARANTEED_RATES.RAINBOW];
+const {
+  PICKUP_RATE,
+  RARITY_OPTIONS,
+  RARITY_WEIGHTS,
+  GUARANTEED_OPTIONS,
+  GUARANTEED_WEIGHTS,
+  MAX_PICKUP_10ROLLS,
+} = require('../config/gachaConfig');
 
 /**
  * seedからrngを作る（未指定なら Date.now() + Math.random）
@@ -64,16 +51,6 @@ function drawSingleWithRng(rng) {
 }
 
 /**
- * 1回引き（seedだけ受け取る。省略ならDate.now）
- * @param {number | undefined} seed
- * @returns {{ rarity: string, isPickup: boolean }}
- */
-function drawSingle(seed) {
-  const rng = createRng(seed);
-  return drawSingleWithRng(rng);
-}
-
-/**
  * 10枠目の確定抽選（内部用）
  * @param {Function} rng
  * @returns {{ rarity: string, isPickup: boolean }}
@@ -91,6 +68,31 @@ function drawGuaranteedWithRng(rng) {
 }
 
 /**
+ * rngを使って10回引き（内部用）
+ * 10枠目は金以上確定
+ * @param {Function} rng
+ * @returns {Array<{ rarity: string, isPickup: boolean }>}
+ */
+function drawMultiWithRng(rng) {
+  const results = [];
+  for (let i = 0; i < 9; i++) {
+    results.push(drawSingleWithRng(rng));
+  }
+  results.push(drawGuaranteedWithRng(rng));
+  return results;
+}
+
+/**
+ * 1回引き（seedだけ受け取る。省略ならDate.now）
+ * @param {number | undefined} seed
+ * @returns {{ rarity: string, isPickup: boolean }}
+ */
+function drawSingle(seed) {
+  const rng = createRng(seed);
+  return drawSingleWithRng(rng);
+}
+
+/**
  * 10連（seedだけ受け取る。省略ならDate.now）
  * 10枠目は金以上確定
  * @param {number | undefined} seed
@@ -98,44 +100,33 @@ function drawGuaranteedWithRng(rng) {
  */
 function drawMulti(seed) {
   const rng = createRng(seed);
+  return drawMultiWithRng(rng);
+}
 
-  const results = [];
-  for (let i = 0; i < 9; i++) {
-    results.push(drawSingleWithRng(rng));
+/**
+ * ピックアップが出るまで10連を回す
+ * 10枠目は金以上確定
+ * @param {number | undefined} seed
+ * @returns {Array<{ rarity: string, isPickup: boolean }>}
+ * @throws {Error} ピックアップが出なかった場合
+ */
+function drawPickup(seed) {
+  const rng = createRng(seed);
+
+  for (let i = 0; i < MAX_PICKUP_10ROLLS; i++) {
+    const results = drawMultiWithRng(rng);
+
+    if (results.some(r => r.isPickup)) {
+      return results;
+    }
   }
-  results.push(drawGuaranteedWithRng(rng));
 
-  return results;
-}
-
-/**
- * 演出選択
- * @param {Array<{ rarity: string, isPickup: boolean }>} results
- * @returns {'guaranteed' | 'normal'}
- */
-function selectAnimation(results) {
-  const hasRainbowOrPickup = results.some(r => r.rarity === 'rainbow' || r.isPickup);
-  return hasRainbowOrPickup ? 'guaranteed' : 'normal';
-}
-
-/**
- * 結果画像選択（優先度: ピックアップ > 虹 > 金 > 銀）
- * @param {string} rarity
- * @param {boolean} isPickupFlag
- * @returns {'pickup' | 'rainbow' | 'gold' | 'silver'}
- */
-function selectResultImage(rarity, isPickupFlag) {
-  if (isPickupFlag) return 'pickup';
-  return rarity;
+  throw new Error('pickup_not_found');
 }
 
 module.exports = {
-  RARITY_RATES,
-  PICKUP_RATE,
-  GUARANTEED_RATES,
   isPickup,
   drawSingle,
   drawMulti,
-  selectAnimation,
-  selectResultImage,
+  drawPickup,
 };

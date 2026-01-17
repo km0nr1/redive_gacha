@@ -1,10 +1,13 @@
 const {
   drawSingle,
   drawMulti,
+  drawPickup,
   isPickup,
+} = require('../src/domain/gacha');
+const {
   selectAnimation,
   selectResultImage,
-} = require('../src/utils/gachaLogic');
+} = require('../src/services/gachaService');
 
 describe('ガチャロジック（seed渡し対応）', () => {
   describe('isPickup - ピックアップ判定', () => {
@@ -180,4 +183,12 @@ describe('ガチャロジック（seed渡し対応）', () => {
       expect(selectResultImage('silver', false)).toBe('silver');
     });
   });
+
+  describe('pickup シミュレーション', () => {
+    test('drawPickup は最終的にピックアップを返す', () => {
+      const results = drawPickup(123456);
+      expect(results.some(r => r.isPickup)).toBe(true);
+    });
+  });
+
 });
