@@ -101,6 +101,60 @@ node src/index.js
 
 ---
 
+## Docker での運用
+
+本プロジェクトは Docker / Docker Compose によるコンテナ運用に対応しています。  
+Discord BOT 本体と、スラッシュコマンド登録処理を **別サービスとして分離**しています。
+
+---
+
+### 前提
+- Docker
+- Docker Compose v2
+- `.env` ファイルが作成済みであること
+
+---
+
+### コンテナ構成
+- **bot**
+  - Discord BOT 本体（常駐）
+  - `node src/index.js` を実行
+- **deploy**
+  - スラッシュコマンド登録用（ワンショット）
+  - `node src/deploy-commands.js` を実行
+
+両サービスは同一イメージ・同一 `.env` を使用します。
+
+---
+
+### BOT の起動（通常運用）
+```bash
+docker compose up -d --build bot
+```
+
+### ログ確認
+```bash
+docker compose logs -f bot
+```
+
+### 停止
+```bash
+docker compose down
+```
+
+### スラッシュコマンドの登録
+以下の場合にのみ実行してください。  
+- コマンド名を変更した
+- description を変更した
+- オプション（choices / required など）を変更した
+- ※ ガチャ確率やロジック変更、画像差し替えでは再実行不要です。
+```bash
+docker compose --profile ops run --rm deploy
+```
+
+
+---
+
 ## 使い方
 
 ### 基本
