@@ -18,8 +18,8 @@
     "url": "git+https://github.com/km0nr1/redive_gacha.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "km0nr1",
+  "license": "MIT License",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/km0nr1/redive_gacha/issues"
