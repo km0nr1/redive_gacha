@@ -156,5 +156,6 @@ npm test
 ## ライセンス (画像以外)
 MIT License
 
-assets画像は https://sui-sai.jp さまの画像をお借りしています
-画像については https://sui-sai.jp さまの規約に沿って取り扱いしてください
+## ライセンス (画像)
+- assets画像は https://sui-sai.jp さまの画像をお借りしています
+- 画像については https://sui-sai.jp さまの規約に沿って取り扱いしてください
