@@ -37,8 +37,12 @@ const ANIMATION_MS = {
 const ANIMATION_PADDING_MS = 0;
 
 // === Discord ===
-// pickup モード識別子（Discord choices用）
-const PICKUP_MODE = 8888;
+// ガチャモード識別子（Discord choices用）
+const GACHA_MODE = {
+  pickup: 8888,
+  multi: 10,
+  single: 1,
+};
 
 module.exports = {
   // 確率
@@ -54,6 +58,6 @@ module.exports = {
   // アニメーション
   ANIMATION_MS,
   ANIMATION_PADDING_MS,
-  // Discord
-  PICKUP_MODE,
+  // Discord choices
+  GACHA_MODE,
 };

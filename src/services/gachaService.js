@@ -3,6 +3,12 @@ const { EmbedBuilder } = require('discord.js');
 const { drawMulti, drawPickup } = require('../domain/gacha');
 const { MAX_PICKUP_10ROLLS } = require('../config/gachaConfig');
 
+/**
+ * ガチャ結果をテキストにまとめる
+ * @param {Array<{ rarity: string, isPickup: boolean }>} results - ガチャ結果の配列
+ * @param {number | null} seedOpt - シード値（nullの場合は表示しない）
+ * @returns {string} フォーマット済みの結果テキスト
+ */
 function summarizeResults(results, seedOpt) {
   const counts = { silver: 0, gold: 0, rainbow: 0, pickup: 0 };
   for (const r of results) {
@@ -20,11 +26,16 @@ function summarizeResults(results, seedOpt) {
   return `**ガチャ結果**\n${parts.join(' / ')}${seedLine}`;
 }
 
+/**
+ * pickupモード用のDiscord Embedを構築する
+ * @param {{ total: number, rainbow: number, pickup: number }} stats - 統計情報（totalは「連」単位）
+ * @param {number | null} seedOpt - シード値（nullの場合はfooterに表示しない）
+ * @returns {EmbedBuilder} Discord Embed
+ */
 function buildPickupEmbed(stats, seedOpt) {
-  // stats: { total, rainbow, pickup } totalは「連」
   const embed = new EmbedBuilder()
     .setTitle('pickup モード')
-    .setDescription('ピックアップが出た10連の結果です🙂')
+    .setDescription('ピックアップが出た10連の結果です')
     .addFields(
       { name: '🎰 総ガチャ回数', value: `**${stats.total}連**`, inline: true },
       { name: '🌈 虹（PU除く）', value: `**${stats.rainbow}枚**`, inline: true },
@@ -39,7 +50,10 @@ function buildPickupEmbed(stats, seedOpt) {
 }
 
 /**
- * pickupモードを実行し、(勝ち10連 results) と stats を返す。
+ * pickupモードを実行し、ピックアップが出た10連の結果と統計を返す
+ * @param {number | null} seedOpt - シード値（nullの場合はランダム）
+ * @returns {{ results: Array<{ rarity: string, isPickup: boolean }>, stats: { total: number, rainbow: number, pickup: number } }}
+ * @throws {Error} 最大試行回数内にピックアップが出なかった場合（code: 'pickup_not_found'）
  */
 function runPickupSimulation(seedOpt) {
   const stats = { total: 0, rainbow: 0, pickup: 0 };

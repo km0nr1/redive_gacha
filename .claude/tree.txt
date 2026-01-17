@@ -1,14 +1,20 @@
-REDIVE_GACHA
+\REDIVE_GACHA
+|   .dockerignore
 |   .env
 |   .gitignore
+|   docker-compose.yml
+|   Dockerfile
 |   jest.config.js
+|   LICENSE
 |   package-lock.json
 |   package.json
 |   README.md
+|   tree.txt
 |
 +---.claude
 |       project-info.md
 |       rules.md
+|       tree.txt
 |
 +---assets
 |   \---gacha
@@ -32,11 +38,20 @@ REDIVE_GACHA
 |   |   index.js
 |   |
 |   +---commands
+|   |       gachaCommand.js
+|   |
+|   +---config
+|   |       gachaConfig.js
+|   |
+|   +---domain
 |   |       gacha.js
 |   |
+|   +---services
+|   |       gachaService.js
+|   |
 |   \---utils
-|           gachaLogic.js
+|           discord.js
 |           imageGenerator.js
 |
 \---tests
-        gachaLogic.test.js
+        gacha.test.js
