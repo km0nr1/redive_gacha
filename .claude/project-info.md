@@ -21,6 +21,9 @@
 ## コーディング規約
 - rules.mdを参照
 
+## ディレクトリ構成
+- tree.txtを参照
+
 ## 乱数（seed）設計
 
 ### 基本方針
@@ -45,6 +48,7 @@ Date.now() + Math.floor(Math.random() * 1e9)
 - guaranteed.avif: 最高レア確定ガチャアニメーション
 
 ### ガチャ結果画像 (assets/gacha/results/)
+- すべての画像は
 - silver.avif: 銀演出（低レア）
 - gold.avif: 金演出（中レア）
 - rainbow.avif: 虹演出（最高レア）
@@ -67,3 +71,17 @@ Date.now() + Math.floor(Math.random() * 1e9)
 - ピックアップは **虹レアリティ時のみ判定**
 - 虹のうち **約 23.3%（0.7% / 3%）** がピックアップ
 - 現仕様では **金以下でピックアップが発生することはない**
+
+## 使い方
+### 1. コマンド登録
+- npm run deploy
+
+### 2. BOT起動
+- npm run dev   # 開発用
+- npm start     # 本番用
+
+### 3. Discordで実行
+- /gacha count:1連
+- /gacha count:10連
+- /gacha count:10連 seed:12345  # デバッグ用
+

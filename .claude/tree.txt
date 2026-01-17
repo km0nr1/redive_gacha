@@ -1,0 +1,42 @@
+REDIVE_GACHA
+|   .env
+|   .gitignore
+|   jest.config.js
+|   package-lock.json
+|   package.json
+|   README.md
+|
++---.claude
+|       project-info.md
+|       rules.md
+|
++---assets
+|   \---gacha
+|       +---animations
+|       |       guaranteed.avif
+|       |       normal.avif
+|       |
+|       \---results
+|               gold.avif
+|               pickup.avif
+|               rainbow.avif
+|               silver.avif
+|
++---docs
+|       .gitkeep
+|
++---node_modules
+|
++---src
+|   |   deploy-commands.js
+|   |   index.js
+|   |
+|   +---commands
+|   |       gacha.js
+|   |
+|   \---utils
+|           gachaLogic.js
+|           imageGenerator.js
+|
+\---tests
+        gachaLogic.test.js

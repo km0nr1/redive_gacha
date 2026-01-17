@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "deploy": "node src/deploy-commands.js",
     "test": "jest"
   },
   "repository": {
@@ -27,7 +28,8 @@
   "dependencies": {
     "aimless.js": "^1.0.4",
     "discord.js": "^14.25.1",
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.3",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "jest": "^30.2.0",
