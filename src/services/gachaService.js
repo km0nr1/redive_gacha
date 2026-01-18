@@ -1,6 +1,6 @@
 // src/services/gachaService.js
 const { EmbedBuilder } = require('discord.js');
-const { drawMulti, drawPickup } = require('../domain/gacha');
+const { drawMulti } = require('../domain/gacha');
 const { MAX_PICKUP_10ROLLS } = require('../config/gachaConfig');
 
 /**
@@ -89,13 +89,6 @@ function buildTenjoEmbed(stats, seedOpt) {
 function runPickupSimulation(seedOpt) {
   const stats = { total: 0, rainbow: 0, pickup: 0 };
 
-  // drawPickup が stats を付与して返す設計なら、それを優先利用（互換性のため）
-  const results = drawPickup(seedOpt);
-  if (results && typeof results === 'object' && results.stats) {
-    return { results, stats: results.stats };
-  }
-
-  // stats 付与が無い場合、仕様どおりで統計を作る
   // seed指定の場合は「seed + attempts10」で 10連ごとに seed を変える（ユーザ要件）
   for (let attempts10 = 1; attempts10 <= MAX_PICKUP_10ROLLS; attempts10++) {
     const seedForThis = (seedOpt === null) ? undefined : (seedOpt + attempts10);
