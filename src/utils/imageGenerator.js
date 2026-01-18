@@ -84,10 +84,20 @@ async function generateResultImage(results) {
     return resultBuffer;
 }
 
+/**
+ * ガチャ天井画像を生成
+ * @returns {Promise<Buffer>} 生成された画像のBuffer
+ */
+async function generateTenjoImage() {
+    const imagePath = path.join(ASSETS_PATH, 'results', 'theEnd.avif');
+    return await sharp(imagePath).toBuffer();
+}
+
 module.exports = {
     getResultImagePath,
     getAnimationPath,
     generateResultImage,
+    generateTenjoImage,
     IMAGE_WIDTH,
     IMAGE_HEIGHT,
 };

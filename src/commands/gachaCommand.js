@@ -5,7 +5,7 @@ const {
 } = require('discord.js');
 
 const { drawSingle, drawMulti } = require('../domain/gacha');
-const { generateResultImage, getAnimationPath } = require('../utils/imageGenerator');
+const { generateResultImage, generateTenjoImage, getAnimationPath } = require('../utils/imageGenerator');
 const { sleep, isAdmin } = require('../utils/discord');
 const {
   ANIMATION_MS,
@@ -14,8 +14,9 @@ const {
   MAX_PICKUP_10ROLLS,
 } = require('../config/gachaConfig');
 const {
-  summarizeResults,
+  buildResultEmbed,
   buildPickupEmbed,
+  buildTenjoEmbed,
   runPickupSimulation,
   selectAnimation,
 } = require('../services/gachaService');
@@ -112,11 +113,12 @@ async function executeGachaWithAnimation(interaction, results, label, seedOpt) {
   await sleep(ANIMATION_MS[animationType] + ANIMATION_PADDING_MS);
 
   const resultImageBuffer = await generateResultImage(results);
-  const filename = (label === '10連') ? 'results.png' : 'result.avif';
-  const resultAttachment = new AttachmentBuilder(resultImageBuffer, { name: filename });
+  const resultAttachment = new AttachmentBuilder(resultImageBuffer, { name: 'results.png' });
+  const embed = buildResultEmbed(results, label, seedOpt);
 
   await interaction.editReply({
-    content: summarizeResults(results, seedOpt),
+    content: null,
+    embeds: [embed],
     files: [resultAttachment],
   });
 }
@@ -133,8 +135,14 @@ async function executePickupMode(interaction, seedOpt) {
     sim = runPickupSimulation(seedOpt);
   } catch (e) {
     if (e && (e.code === 'pickup_not_found' || e.message === 'pickup_not_found')) {
+      const tenjoImageBuffer = await generateTenjoImage();
+      const tenjoAttachment = new AttachmentBuilder(tenjoImageBuffer, { name: 'results.png' });
+      const embed = buildTenjoEmbed(e.stats, seedOpt);
+
       await interaction.editReply({
-        content: `1000連してもピックアップが出ませんでした。`,
+        content: null,
+        embeds: [embed],
+        files: [tenjoAttachment],
       });
       return false;
     }

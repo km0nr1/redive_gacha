@@ -27,6 +27,7 @@
 |               pickup.avif
 |               rainbow.avif
 |               silver.avif
+|               theEnd.avif
 |
 +---docs
 |       .gitkeep
