@@ -25,11 +25,10 @@ const GUARANTEED_OPTIONS = ['gold', 'rainbow'];
 const GUARANTEED_WEIGHTS = [GUARANTEED_RATES.GOLD, GUARANTEED_RATES.RAINBOW];
 
 // === 制限値 ===
-// 安全装置：最大1000連（= 100回の10連）
-const MAX_PICKUP_10ROLLS = 100;
+// 安全装置：最大N連（= 10連 x MAX_PICKUP_10ROLLS 回）
+const MAX_PICKUP_10ROLLS = 20;
 
 // === アニメーション ===
-// ffprobe結果（ms）
 const ANIMATION_MS = {
   normal: 6400,
   guaranteed: 6400,
@@ -39,7 +38,7 @@ const ANIMATION_PADDING_MS = 0;
 // === Discord ===
 // ガチャモード識別子（Discord choices用）
 const GACHA_MODE = {
-  pickup: 8888,
+  pickup: 200,
   multi: 10,
   single: 1,
 };
